@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FDK Store — Dark Neon</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: radial-gradient(circle at 10% 10%, #0b1020 0%, #071022 30%, #071226 100%); color: #e6eef8; }
+    /* Neon glows */
+    .neon-yellow { box-shadow: 0 8px 30px rgba(255, 204, 51, 0.12), 0 0 30px rgba(255, 204, 51, 0.08); }
+    .neon-pink { box-shadow: 0 8px 40px rgba(255, 102, 178, 0.12), 0 0 40px rgba(255,102,178,0.06); }
+    .glass { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(6px); }
+    /* Tiny 3D rotate animation for hero product */
+    @keyframes float-rotate {
+      0% { transform: rotateY(-12deg) translateY(0px) translateZ(0); }
+      50% { transform: rotateY(12deg) translateY(-8px) translateZ(6px); }
+      100% { transform: rotateY(-12deg) translateY(0px) translateZ(0); }
+    }
+    .product-3d { transform-origin: center; animation: float-rotate 4.5s ease-in-out infinite; transform-style: preserve-3d; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="body-font">
+    <div class="container mx-auto flex flex-wrap p-5 items-center justify-between">
+      <a class="flex items-center title-font font-medium text-white hover:scale-105 transition">
+        <div class="w-10 h-10 p-2 rounded-full bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 shadow-xl flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 7l10 5 10-5-10-5zM2 12l10 5 10-5M2 17l10 5 10-5" />
+          </svg>
+        </div>
+        <span class="ml-3 text-2xl font-bold tracking-tight">FDK Store</span>
+      </a>
+
+      <nav class="hidden md:flex space-x-6 text-gray-300">
+        <a class="hover:text-yellow-300 transition">Home</a>
+        <a class="hover:text-pink-300 transition">Shop</a>
+        <a class="hover:text-indigo-300 transition">About</a>
+        <a class="hover:text-yellow-300 transition">Contact</a>
+      </nav>
+
+      <div class="flex items-center space-x-3">
+        <button class="hidden md:inline-flex items-center bg-gradient-to-r from-yellow-400 to-pink-400 text-black px-4 py-2 rounded-full font-semibold hover:scale-105 transition neon-yellow">
+          Start Shopping
+        </button>
+        <div class="md:hidden text-gray-300">☰</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="container mx-auto px-5 py-16">
+    <div class="flex flex-col lg:flex-row items-center gap-10">
+      <!-- Left: Text -->
+      <div class="lg:w-1/2 text-center lg:text-left">
+        <h1 class="text-5xl md:text-6xl font-extrabold mb-4">
+          Premium 3D Shop <span class="text-yellow-400">FDK Store</span>
+        </h1>
+        <p class="text-gray-300 max-w-xl mb-6">
+          Luxury products presented with futuristic 3D-style cards, neon-glow accents, and buttery-smooth interactions.
+          Perfect for watches, fashion, and high-end tech.
+        </p>
+        <div class="flex items-center gap-4 justify-center lg:justify-start">
+          <button class="bg-yellow-400 text-black px-6 py-3 rounded-full font-semibold hover:shadow-xl hover:scale-105 transition neon-yellow">Explore Collection</button>
+          <button class="border border-white/10 px-5 py-3 rounded-full text-white glass hover:scale-105 transition">Learn More</button>
+        </div>
+      </div>
+
+      <!-- Right: 3D product card -->
+      <div class="lg:w-1/2 flex justify-center">
+        <div class="w-80 rounded-3xl product-3d glass neon-pink p-4 transform perspective-1000">
+          <div class="relative rounded-2xl overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&q=80"
+                 alt="Watch" class="w-full h-64 object-cover rounded-2xl transform" />
+            <!-- Neon ring -->
+            <div class="absolute inset-0 pointer-events-none">
+              <div class="absolute -bottom-12 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-gradient-to-br from-pink-500/30 to-yellow-400/20 filter blur-3xl"></div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <h3 class="text-xl font-semibold text-yellow-400">Men's Luxury Watch</h3>
+            <p class="text-gray-300 text-sm mt-1">Stainless steel • Quartz • Water-resistant</p>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="font-bold text-lg">$89.99</span>
+              <button class="bg-gradient-to-r from-pink-400 to-yellow-400 px-4 py-1 rounded-full font-semibold text-black hover:scale-105 transition">Buy Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED / PRODUCTS GRID -->
+  <section class="bg-[#061027] py-16">
+    <div class="container mx-auto px-5">
+      <div class="text-center mb-12">
+        <h4 class="text-sm text-yellow-400 tracking-widest font-semibold">FEATURED COLLECTION</h4>
+        <h2 class="text-4xl font-extrabold text-white mt-2 mb-3">Top Trending Products</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">Futuristic design, premium materials — for people who want to stand out.</p>
+      </div>
+
+      <div class="flex flex-wrap -mx-4 justify-center">
+        <!-- Card template: duplicate/change -->
+        <div class="p-4 md:w-1/3 lg:w-1/4 w-full">
+          <div class="h-full glass rounded-2xl p-4 hover:-translate-y-3 transform transition-shadow duration-300 neon-yellow border border-white/6 shadow-lg">
+            <div class="relative overflow-hidden rounded-xl">
+              <img class="object-cover object-center w-full h-48 rounded-xl" src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=1200&q=80" alt="Headphones">
+              <div class="absolute -bottom-8 right-4 w-24 h-24 rounded-full bg-gradient-to-br from-pink-400/30 to-yellow-400/20 filter blur-2xl"></div>
+            </div>
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-pink-300">Wireless Headphones</h3>
+              <p class="text-sm text-gray-300 mt-1">Noise cancellation • 30h battery • Premium bass</p>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-lg font-bold">$59.99</span>
+              <button class="bg-pink-400 text-black px-3 py-1 rounded-full font-semibold hover:scale-105 transition">Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 md:w-1/3 lg:w-1/4 w-full">
+          <div class="h-full glass rounded-2xl p-4 hover:-translate-y-3 transform transition-shadow duration-300 neon-pink border border-white/6 shadow-lg">
+            <div class="relative overflow-hidden rounded-xl">
+              <img class="object-cover object-center w-full h-48 rounded-xl" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&q=80" alt="Sneakers">
+              <div class="absolute -bottom-8 left-4 w-24 h-24 rounded-full bg-gradient-to-br from-indigo-400/30 to-pink-400/20 filter blur-2xl"></div>
+            </div>
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-indigo-300">Smart Sneakers</h3>
+              <p class="text-sm text-gray-300 mt-1">Responsive sole • Modern silhouette</p>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-lg font-bold">$120.00</span>
+              <button class="bg-indigo-400 text-black px-3 py-1 rounded-full font-semibold hover:scale-105 transition">Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 md:w-1/3 lg:w-1/4 w-full">
+          <div class="h-full glass rounded-2xl p-4 hover:-translate-y-3 transform transition-shadow duration-300 neon-yellow border border-white/6 shadow-lg">
+            <div class="relative overflow-hidden rounded-xl">
+              <img class="object-cover object-center w-full h-48 rounded-xl" src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=1200&q=80" alt="Sunglasses">
+              <div class="absolute -bottom-8 right-4 w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400/30 to-indigo-400/20 filter blur-2xl"></div>
+            </div>
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-yellow-300">Aviator Sunglasses</h3>
+              <p class="text-sm text-gray-300 mt-1">Polarized • UV400 protection</p>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-lg font-bold">$45.00</span>
+              <button class="bg-yellow-400 text-black px-3 py-1 rounded-full font-semibold hover:scale-105 transition">Buy</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-20">
+    <div class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 py-12 glass">
+      <div class="container mx-auto px-5 flex flex-wrap justify-between items-start gap-8">
+        <div class="w-64">
+          <div class="flex items-center">
+            <div class="w-10 h-10 p-2 rounded-full bg-white/10 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M12 2L2 7l10 5 10-5-10-5zM2 12l10 5 10-5M2 17l10 5 10-5"/>
+              </svg>
+            </div>
+            <span class="ml-3 text-xl font-bold">FDK Store</span>
+          </div>
+          <p class="text-gray-200 mt-4 text-sm">Premium destination for luxury products with futuristic design.</p>
+        </div>
+
+        <div class="flex-grow flex gap-8 md:gap-16">
+          <div>
+            <h4 class="text-yellow-300 font-bold mb-3">SHOP</h4>
+            <ul class="text-gray-200 space-y-2">
+              <li><a class="hover:text-yellow-400">Watches</a></li>
+              <li><a class="hover:text-yellow-400">Fashion</a></li>
+              <li><a class="hover:text-yellow-400">Electronics</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-yellow-300 font-bold mb-3">SUPPORT</h4>
+            <ul class="text-gray-200 space-y-2">
+              <li><a class="hover:text-yellow-400">Help Center</a></li>
+              <li><a class="hover:text-yellow-400">Returns</a></li>
+              <li><a class="hover:text-yellow-400">Shipping</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-white/10 mt-8">
+        <div class="container mx-auto px-5 py-6 flex flex-col sm:flex-row justify-between items-center text-gray-300">
+          <p>© <span id="year-dark"></span> FDK Store — All rights reserved.</p>
+          <div class="flex items-center gap-4 mt-4 sm:mt-0">
+            <a class="hover:text-yellow-300">Twitter</a>
+            <a class="hover:text-yellow-300">Instagram</a>
+            <a class="hover:text-yellow-300">Facebook</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Chat Bubble + Popup -->
+  <div id="chat-bubble" class="fixed bottom-6 right-6 bg-gradient-to-r from-yellow-400 to-pink-400 text-black rounded-full w-14 h-14 flex items-center justify-center shadow-2xl cursor-pointer animate-bounce">
+    💬
+  </div>
+
+  <div id="chat-popup" class="hidden fixed bottom-24 right-6 bg-[#071028]/80 backdrop-blur-md text-white rounded-2xl shadow-2xl p-4 w-80 border border-white/10">
+    <h3 class="text-lg font-semibold mb-2">Hi! Need help?</h3>
+    <p class="text-sm text-gray-300 mb-4">I can suggest products, help with sizing, or show deals.</p>
+    <div class="flex gap-2">
+      <button id="shop-btn" class="flex-1 bg-yellow-400 text-black px-3 py-2 rounded-full font-semibold">Shop</button>
+      <button id="close-chat" class="bg-transparent border border-white/10 px-3 py-2 rounded-full">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // footer year
+    document.getElementById('year-dark').textContent = new Date().getFullYear();
+
+    // chat toggle
+    const chatBubble = document.getElementById('chat-bubble');
+    const chatPopup = document.getElementById('chat-popup');
+    const closeChat = document.getElementById('close-chat');
+    chatBubble.addEventListener('click', () => chatPopup.classList.toggle('hidden'));
+    closeChat.addEventListener('click', () => chatPopup.classList.add('hidden'));
+    document.getElementById('shop-btn').addEventListener('click', () => {
+      chatPopup.classList.add('hidden');
+      window.scrollTo({ top: document.querySelector('section[aria-label="products"]') ? document.querySelector('section[aria-label="products"]').offsetTop : 600, behavior: 'smooth' });
+    });
+  </script>
+
+</body>
+</html>
