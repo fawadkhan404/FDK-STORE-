@@ -1,25 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FDK Store | Modern Online Shopping</title>
 
-  <!-- 🔹 SEO Meta Tags -->
-  <meta name="description" content="FDK Store – Modern Online Shopping for premium products with futuristic design and smooth experience." />
-  <meta name="keywords" content="FDK Store, online shopping, e-commerce, Pakistan, modern store, buy online, premium products" />
-  <meta name="author" content="Fawad Khan" />
-  <meta name="robots" content="index, follow" />
+  <!-- 🔹 SEO -->
+  <meta name="description" content="FDK Store – Modern Online Shopping for premium and luxury products with a futuristic 3D design.">
+  <meta name="keywords" content="FDK Store, online shopping, Pakistan, e-commerce, fashion, electronics, luxury, 3D webstore">
+  <meta name="author" content="Fawad Khan">
+  <meta name="robots" content="index, follow">
 
-  <!-- 🔹 Open Graph / Social Media -->
-  <meta property="og:title" content="FDK Store | Modern Online Shopping" />
-  <meta property="og:description" content="Shop premium products with futuristic 3D cards, smooth transitions, and modern shopping design." />
-  <meta property="og:url" content="https://fdkstore.vercel.app" />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://fdkstore.vercel.app/thumbnail.jpg" />
-
-  <!-- 🔹 Favicon -->
-  <link rel="icon" href="https://fdkstore.vercel.app/favicon.ico" />
+  <!-- 🔹 Open Graph -->
+  <meta property="og:title" content="FDK Store | Modern Online Shopping">
+  <meta property="og:description" content="Shop premium and futuristic 3D-style products only on FDK Store.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://fdkstore.vercel.app">
+  <meta property="og:image" content="https://fdkstore.vercel.app/thumbnail.jpg">
 
   <!-- 🔹 Canonical -->
   <link rel="canonical" href="https://fdkstore.vercel.app" />
@@ -28,66 +25,118 @@
   <style>
     body {
       margin: 0;
-      font-family: "Poppins", sans-serif;
+      font-family: 'Poppins', sans-serif;
       background-color: #0d0d0d;
-      color: #fff;
+      color: white;
     }
+
     header {
-      background: linear-gradient(90deg, #ff00cc, #3333ff);
-      padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 1rem 2rem;
+      background: linear-gradient(90deg, #ff0080, #7928ca);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
+
     header h1 {
       font-size: 1.5rem;
       letter-spacing: 1px;
     }
+
     nav a {
       color: white;
       margin-left: 1.5rem;
       text-decoration: none;
       font-weight: 500;
+      transition: color 0.3s ease;
     }
+
+    nav a:hover {
+      color: #00ffff;
+    }
+
     .hero {
       text-align: center;
       padding: 5rem 2rem;
+      background: linear-gradient(145deg, #1a1a1a, #121212);
     }
+
     .hero h2 {
       font-size: 2rem;
       color: #00ffff;
     }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: #ccc;
+      margin: 1rem 0;
+    }
+
+    button {
+      background: #ff0080;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      margin: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #00ffff;
+      color: black;
+    }
+
     .products {
+      padding: 3rem 2rem;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem;
+      gap: 2rem;
     }
+
     .card {
       background: #1a1a1a;
-      border-radius: 12px;
+      border-radius: 15px;
       padding: 1.5rem;
       text-align: center;
+      box-shadow: 0 0 15px rgba(255, 0, 128, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px #ff00cc;
+      transform: translateY(-8px);
+      box-shadow: 0 0 25px rgba(255, 0, 128, 0.4);
     }
+
+    .card h3 {
+      color: #00ffff;
+    }
+
     footer {
       text-align: center;
       padding: 2rem;
       background: #111;
-      margin-top: 3rem;
       border-top: 1px solid #333;
+      margin-top: 3rem;
     }
+
     .socials a {
       margin: 0 10px;
       color: #00ffff;
       text-decoration: none;
     }
+
+    .socials a:hover {
+      color: #ff0080;
+    }
   </style>
 </head>
+
 <body>
   <header>
     <h1>FDK Store</h1>
@@ -113,6 +162,7 @@
       <h4>$89.99</h4>
       <button>Buy Now</button>
     </div>
+
     <div class="card">
       <h3>Wireless Headphones</h3>
       <p>Noise cancellation • 30h battery • Premium bass</p>
@@ -131,4 +181,4 @@
     <p>© 2025 FDK Store — All rights reserved.</p>
   </footer>
 </body>
-  </html>
+</html>
