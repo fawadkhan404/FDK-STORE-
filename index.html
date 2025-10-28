@@ -3,53 +3,93 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FDK Store | Online Shopping</title>
+  <title>FDK Store | Modern Online Shopping</title>
 
-  <!-- ✅ SEO Meta Tags -->
-  <meta name="description" content="FDK Store — Online Shopping for premium watches, electronics, and fashion. Experience futuristic 3D-style design, neon themes, and trusted delivery in Pakistan." />
-  <meta name="keywords" content="FDK Store, online shopping Pakistan, 3D store, eCommerce, watches, electronics, fashion, futuristic design" />
-  <meta name="author" content="FDK Store Official" />
+  <!-- 🔹 SEO Meta Tags -->
+  <meta name="description" content="FDK Store – Modern Online Shopping for premium products with futuristic design and smooth experience." />
+  <meta name="keywords" content="FDK Store, online shopping, e-commerce, Pakistan, modern store, buy online, premium products" />
+  <meta name="author" content="Fawad Khan" />
+  <meta name="robots" content="index, follow" />
 
-  <!-- ✅ Open Graph / Facebook -->
-  <meta property="og:title" content="FDK Store | Online Shopping" />
-  <meta property="og:description" content="Shop premium watches, electronics, and more with futuristic 3D-style design and neon accents." />
-  <meta property="og:image" content="https://fdkstore.vercel.app/cover.jpg" />
+  <!-- 🔹 Open Graph / Social Media -->
+  <meta property="og:title" content="FDK Store | Modern Online Shopping" />
+  <meta property="og:description" content="Shop premium products with futuristic 3D cards, smooth transitions, and modern shopping design." />
   <meta property="og:url" content="https://fdkstore.vercel.app" />
   <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://fdkstore.vercel.app/thumbnail.jpg" />
 
-  <!-- ✅ Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="FDK Store | Online Shopping" />
-  <meta name="twitter:description" content="Shop premium products with futuristic design and smooth 3D-style cards." />
-  <meta name="twitter:image" content="https://fdkstore.vercel.app/cover.jpg" />
+  <!-- 🔹 Favicon -->
+  <link rel="icon" href="https://fdkstore.vercel.app/favicon.ico" />
 
-  <!-- ✅ Structured Data for Google -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Store",
-    "name": "FDK Store",
-    "url": "https://fdkstore.vercel.app",
-    "logo": "https://fdkstore.vercel.app/logo.png",
-    "sameAs": [
-      "https://twitter.com/fdkstore",
-      "https://www.instagram.com/fdkstore",
-      "https://facebook.com/fdkstore"
-    ],
-    "description": "Online shopping for premium watches, electronics, and futuristic 3D-style products.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "PK"
+  <!-- 🔹 Canonical -->
+  <link rel="canonical" href="https://fdkstore.vercel.app" />
+
+  <!-- 🔹 Styles -->
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background-color: #0d0d0d;
+      color: #fff;
     }
-  }
-  </script>
-
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    header {
+      background: linear-gradient(90deg, #ff00cc, #3333ff);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+    nav a {
+      color: white;
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .hero {
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+    .hero h2 {
+      font-size: 2rem;
+      color: #00ffff;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    .card {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px #ff00cc;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #111;
+      margin-top: 3rem;
+      border-top: 1px solid #333;
+    }
+    .socials a {
+      margin: 0 10px;
+      color: #00ffff;
+      text-decoration: none;
+    }
+  </style>
 </head>
-
 <body>
-  <header class="header">
+  <header>
     <h1>FDK Store</h1>
     <nav>
       <a href="#">Home</a>
@@ -60,42 +100,35 @@
   </header>
 
   <section class="hero">
-    <h2>Online Shopping</h2>
+    <h2>Modern Online Shopping</h2>
     <p>Shop premium products with futuristic 3D-style cards, neon accents, and smooth interactions.</p>
-    <div class="buttons">
-      <a href="#" class="btn">Explore Collection</a>
-      <a href="#" class="btn secondary">Learn More</a>
-    </div>
+    <button>Explore Collection</button>
+    <button>Learn More</button>
   </section>
 
-  <section class="product">
-    <h3>Men's Luxury Watch</h3>
-    <p>Stainless steel • Quartz • Water-resistant</p>
-    <span>$89.99</span>
-    <button class="buy-btn">Buy Now</button>
-  </section>
-
-  <section class="featured">
-    <h2>FEATURED COLLECTION</h2>
-    <h3>Top Trending Products</h3>
-    <p>Futuristic design, premium materials — for people who want to stand out.</p>
-
+  <section class="products">
     <div class="card">
-      <h4>Wireless Headphones</h4>
+      <h3>Men's Luxury Watch</h3>
+      <p>Stainless steel • Quartz • Water-resistant</p>
+      <h4>$89.99</h4>
+      <button>Buy Now</button>
+    </div>
+    <div class="card">
+      <h3>Wireless Headphones</h3>
       <p>Noise cancellation • 30h battery • Premium bass</p>
-      <span>$59.99</span>
-      <button class="buy-btn">Buy</button>
+      <h4>$59.99</h4>
+      <button>Buy Now</button>
     </div>
   </section>
 
   <footer>
-    <p>FDK Store — Premium destination for online shopping with futuristic design.</p>
-    <p>© 2025 FDK Store — All rights reserved.</p>
+    <p>FDK Store — Modern Online Shopping for everyone.</p>
     <div class="socials">
-      <a href="#">Twitter</a>
-      <a href="#">Instagram</a>
+      <a href="#">Twitter</a> |
+      <a href="#">Instagram</a> |
       <a href="#">Facebook</a>
     </div>
+    <p>© 2025 FDK Store — All rights reserved.</p>
   </footer>
 </body>
-</html>
+  </html>
