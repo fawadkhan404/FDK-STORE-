@@ -1,0 +1,56 @@
+/* 🌟 FDK Store Main Style */
+body {
+  background: #0b1020;
+  color: #e6eef8;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+  border-radius: 1rem;
+}
+
+.neon-yellow { box-shadow: 0 0 20px #FFD700; }
+.neon-pink { box-shadow: 0 0 20px #FF66B2; }
+
+.product-3d {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  animation: float-rotate 4.5s ease-in-out infinite;
+}
+
+@keyframes float-rotate {
+  0% { transform: rotateY(-12deg) translateY(0); }
+  50% { transform: rotateY(12deg) translateY(-8px) translateZ(6px); }
+  100% { transform: rotateY(-12deg) translateY(0); }
+}
+
+/* Buttons & Transitions */
+button, a {
+  transition: all 0.3s ease;
+}
+button:hover, a:hover {
+  transform: scale(1.05);
+}
+
+/* Chat bubble */
+#chat-bubble {
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Reviews */
+.stars span {
+  font-size: 22px;
+  color: #888;
+  cursor: pointer;
+}
+.stars span.active {
+  color: #FFD700;
+}
