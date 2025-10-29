@@ -5,43 +5,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>FDK Store — Online Shopping</title>
 
-<!-- Tailwind CDN -->
+<!-- Tailwind (CDN) -->
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-:root{
-  --bg:#061028;
-  --glass: rgba(255,255,255,0.04);
-  --muted:#bfcfe0;
-}
-body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0ff; font-family: Inter, Poppins, system-ui, sans-serif; min-height:100vh; }
-.glass { background: var(--glass); backdrop-filter: blur(8px); border-radius: 12px; }
-.neon-yellow { box-shadow: 0 6px 30px rgba(255,215,0,0.12), 0 0 12px rgba(255,215,0,0.06); }
-.neon-pink { box-shadow: 0 6px 30px rgba(255,102,178,0.08), 0 0 12px rgba(255,102,178,0.05); }
-.product-card { transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s; }
-.product-card:hover{ transform: translateY(-10px) scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-.badge { font-weight:700; font-size:.75rem; padding:.25rem .6rem; border-radius:999px; }
-.cursor-grab { cursor: grab; }
-.cursor-grabbing { cursor: grabbing; }
-
-/* Cart panel vertically centered */
-.cart-panel {
-  position: fixed;
-  top: 50%;
-  right: 16px;
-  transform: translateY(-50%);
-  width: 300px;
-  background: var(--glass);
-  backdrop-filter: blur(8px);
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 0 20px #FFD700;
-  z-index: 1000;
-  transition: all 0.32s ease;
-}
-.cart-panel.hidden { right:-380px; }
-#loginModal { background: rgba(0,0,0,0.6); display: flex; }
-#loginModal.hidden { display: none; }
+  :root{
+    --bg:#061028;
+    --glass: rgba(255,255,255,0.04);
+    --muted:#bfcfe0;
+  }
+  body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0ff; font-family: 'Poppins', sans-serif; min-height:100vh; }
+  .glass { background: var(--glass); backdrop-filter: blur(8px); border-radius: 12px; }
+  .neon-yellow { box-shadow: 0 6px 30px rgba(255,215,0,0.12), 0 0 12px rgba(255,215,0,0.06); }
+  .neon-pink { box-shadow: 0 6px 30px rgba(255,102,178,0.08), 0 0 12px rgba(255,102,178,0.05); }
+  .product-card { transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s; }
+  .product-card:hover{ transform: translateY(-10px) scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+  .badge { font-weight:700; font-size:.75rem; padding:.25rem .6rem; border-radius:999px; }
+  .cart-panel { right:-380px; transition: right .32s ease; }
+  .cart-panel.open { right: 16px; }
 </style>
 </head>
 <body>
@@ -52,6 +33,7 @@ body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0f
     <div class="text-2xl font-bold">FDK Store</div>
     <div class="text-sm text-slate-300 hidden md:block">— Trusted online store</div>
   </div>
+
   <div class="flex items-center gap-3">
     <div id="userArea" class="flex items-center gap-3">
       <button id="loginBtn" class="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-pink-400 text-black px-4 py-2 rounded-full font-semibold neon-yellow">
@@ -69,29 +51,33 @@ body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0f
 <section class="px-6 py-8 grid lg:grid-cols-2 gap-8 items-center">
   <div>
     <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">FDK Store — <span class="text-yellow-400">Online Shopping</span></h1>
-    <p class="mt-4 text-slate-300 max-w-xl">Find top-quality products easily at the latest styles and fair prices.</p>
+    <p class="mt-4 text-slate-300 max-w-xl">
+      Discover the latest products easily and at reasonable prices.
+    </p>
     <div class="flex gap-3 mt-6">
       <a href="#products" class="px-5 py-3 rounded-full bg-yellow-400 text-black font-semibold neon-yellow">Explore Collection</a>
       <button id="learnBtn" class="px-4 py-3 rounded-full glass text-sm">Learn More</button>
     </div>
     <div class="mt-6">
-      <p class="text-sm text-slate-300">Hello, <span id="greetingName">Guest</span></p>
+      <p class="text-sm text-slate-300">Hello, <span id="greetingName">Guest</span> 👋</p>
     </div>
   </div>
 
-  <!-- Hero Product Card -->
+  <!-- Placeholder 3D card -->
   <div class="w-full flex justify-center">
-    <div class="glass neon-pink p-3 rounded-2xl" style="width:360px; max-width:100%;">
-      <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&q=80" alt="Watch" class="w-full h-80 object-cover rounded-xl">
+    <div id="viewerWrap" class="glass neon-pink p-3 rounded-2xl" style="width:360px; max-width:100%;">
+      <canvas id="heroCanvas" class="w-full h-80 rounded-xl"></canvas>
       <div class="mt-3 flex items-center justify-between">
         <div>
-          <div class="font-semibold text-lg">FDK — Stainless Watch</div>
+          <div id="viewerTitle" class="font-semibold text-lg">FDK — Stainless Watch</div>
           <div class="text-sm text-slate-300">Stainless • Quartz • Water-resistant</div>
         </div>
-        <div class="font-bold text-lg">$89.99</div>
+        <div class="flex items-center gap-2">
+          <div id="priceTag" class="font-bold text-lg">$89.99</div>
+        </div>
       </div>
-      <div class="mt-3">
-        <button class="px-4 py-2 rounded-full bg-yellow-400 text-black font-semibold w-full">Buy</button>
+      <div class="mt-3 flex gap-2">
+        <button id="buyNowHero" class="px-4 py-2 rounded-full bg-yellow-400 text-black font-semibold">Buy</button>
       </div>
     </div>
   </div>
@@ -100,9 +86,10 @@ body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0f
 <!-- PRODUCTS GRID -->
 <section id="products" class="px-6 py-10">
   <h2 class="text-2xl font-bold mb-3 text-center">Top Trending Products</h2>
-  <p class="text-center text-slate-300 mb-6">Glass cards, neon accents, badges, ratings — direct add-to-cart.</p>
+  <p class="text-center text-slate-300 mb-6">High-quality products at reasonable prices.</p>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    <!-- Product 1 -->
+    <!-- card 1 -->
     <div class="product-card glass p-4 rounded-2xl">
       <div class="relative">
         <img class="w-full h-48 object-cover rounded-xl" src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=1200&q=80" alt="Headphones">
@@ -113,10 +100,13 @@ body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0f
       <p class="text-sm text-slate-300">Noise cancellation • 30h battery</p>
       <div class="mt-3 flex items-center justify-between">
         <div class="font-bold">$59.99</div>
-        <button class="add-btn px-3 py-1 rounded-full bg-pink-400 text-black font-semibold">Add</button>
+        <div class="flex gap-2">
+          <button class="add-btn px-3 py-1 rounded-full bg-pink-400 text-black font-semibold">Add</button>
+        </div>
       </div>
     </div>
-    <!-- Product 2 -->
+
+    <!-- card 2 -->
     <div class="product-card glass p-4 rounded-2xl">
       <div class="relative">
         <img class="w-full h-48 object-cover rounded-xl" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&q=80" alt="Sneakers">
@@ -127,10 +117,12 @@ body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0f
       <p class="text-sm text-slate-300">Responsive sole • Modern silhouette</p>
       <div class="mt-3 flex items-center justify-between">
         <div class="font-bold">$120.00</div>
-        <button class="add-btn px-3 py-1 rounded-full bg-indigo-400 text-black font-semibold">Add</button>
+        <div class="flex gap-2">
+          <button class="add-btn px-3 py-1 rounded-full bg-indigo-400 text-black font-semibold">Add</button>
+        </div>
       </div>
-    </div>
-    <!-- Product 3 -->
+      </div>
+      <!-- card 3 -->
     <div class="product-card glass p-4 rounded-2xl">
       <div class="relative">
         <img class="w-full h-48 object-cover rounded-xl" src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=1200&q=80" alt="Sunglasses">
@@ -141,10 +133,13 @@ body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0f
       <p class="text-sm text-slate-300">Polarized • UV400</p>
       <div class="mt-3 flex items-center justify-between">
         <div class="font-bold">$45.00</div>
-        <button class="add-btn px-3 py-1 rounded-full bg-yellow-400 text-black font-semibold">Add</button>
+        <div class="flex gap-2">
+          <button class="add-btn px-3 py-1 rounded-full bg-yellow-400 text-black font-semibold">Add</button>
+        </div>
       </div>
     </div>
-    <!-- Product 4 -->
+
+    <!-- card 4 -->
     <div class="product-card glass p-4 rounded-2xl">
       <div class="relative">
         <img class="w-full h-48 object-cover rounded-xl" src="https://images.unsplash.com/photo-1511450557836-5e9b0d71bfc4?w=1200&q=80" alt="Bag">
@@ -155,14 +150,16 @@ body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0f
       <p class="text-sm text-slate-300">Stylish • LED accent</p>
       <div class="mt-3 flex items-center justify-between">
         <div class="font-bold">$79.00</div>
-        <button class="add-btn px-3 py-1 rounded-full bg-pink-400 text-black font-semibold">Add</button>
+        <div class="flex gap-2">
+          <button class="add-btn px-3 py-1 rounded-full bg-pink-400 text-black font-semibold">Add</button>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- CART PANEL -->
-<aside id="cartPanel" class="cart-panel hidden">
+<aside id="cartPanel" class="cart-panel fixed top-20 right-4 w-80 glass p-4 rounded-2xl shadow-xl z-50">
   <div class="flex items-center justify-between">
     <h3 class="font-bold">Your Cart</h3>
     <button id="closeCart" class="text-sm text-slate-300">Close</button>
@@ -176,6 +173,43 @@ body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0f
   </div>
 </aside>
 
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="fixed inset-0 hidden items-center justify-center z-60">
+  <div class="glass p-6 rounded-2xl w-full max-w-md">
+    <div class="flex items-center justify-between">
+      <h3 class="text-xl font-bold">Login</h3>
+      <button id="closeLoginModal" class="text-slate-300">✕</button>
+    </div>
+    <p class="text-slate-300 mt-2">Sign in with Gmail to show your name across the store.</p>
+
+    <div class="mt-4 space-y-3">
+      <div id="gsiButtonWrapper"></div>
+      <div id="fallbackLogin" class="space-y-2">
+        <input id="fakeName" class="w-full p-2 rounded-md bg-black/20" placeholder="Type a name to simulate login">
+        <div class="flex gap-2">
+          <button id="fakeLoginBtn" class="flex-1 rounded-full bg-pink-500 text-black py-2 font-semibold">Simulate Login</button>
+          <button id="cancelFake" class="flex-1 rounded-full bg-transparent border border-white/10 py-2">Cancel</button>
+        </div>
+      </div>
+      <p class="text-xs text-slate-400 mt-3">For real Gmail sign-in, paste your Google OAuth Client ID in the script.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="chatBubble" class="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-r from-yellow-400 to-pink-400 text-black shadow-xl z-40">💬</div>
+<div id="chatBox" class="hidden fixed bottom-24 right-6 glass p-4 w-80 rounded-2xl z-40">
+  <div class="flex items-center justify-between">
+    <h4 class="font-semibold">Support</h4>
+    <button id="closeChat" class="text-slate-300">✕</button>
+  </div>
+  <p class="text-slate-300 mt-2 text-sm">Hi! I can suggest products or answer order questions.</p>
+  <div class="mt-3 flex gap-2">
+    <button id="quickShop" class="flex-1 rounded-full bg-yellow-400 text-black py-2">Shop</button>
+    <button id="askAgent" class="flex-1 rounded-full glass py-2">Message</button>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer class="px-6 py-8 text-slate-300">
   <div class="max-w-6xl mx-auto text-center">
@@ -184,12 +218,12 @@ body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0f
   </div>
 </footer>
 
-<!-- SCRIPT -->
+<!-- ---------- SCRIPT PART ---------- -->
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
-let cart = [];
-let APP_USER_NAME = null;
 
+/* CART LOGIC */
+let cart = [];
 function updateCartUI(){
   const cartList = document.getElementById('cartList');
   const cartCount = document.getElementById('cartCount');
@@ -197,19 +231,19 @@ function updateCartUI(){
   if(cart.length === 0){
     cartList.innerHTML = '<p class="text-slate-400">No items yet.</p>';
   } else {
-    cartList.innerHTML = cart.map(it=>\`<div class="flex items-center justify-between py-2"><div><div class="font-semibold">\${it.name}</div><div class="text-xs text-slate-400">\${it.desc}</div></div><div class="text-sm font-bold">\${it.price}</div></div>\`).join('');
+    cartList.innerHTML = cart.map(it=>`<div class="flex items-center justify-between py-2"><div><div class="font-semibold">${it.name}</div><div class="text-xs text-slate-400">${it.desc}</div></div><div class="text-sm font-bold">${it.price}</div></div>`).join('');
   }
   cartCount.textContent = cart.length;
-  let total = cart.reduce((s,it)=> s + parseFloat(it.price.replace('$','')), 0);
-  totalEl.textContent = '$' + total.toFixed(2);
+  let total = cart.reduce((s,it)=> s + parseFloat(it.price.replace('$','')),0);
+  totalEl.textContent = '$'+total.toFixed(2);
 }
-function addToCart(name, price, desc){
-  cart.push({name, price, desc});
+function addToCart(name,price,desc){
+  cart.push({name,price,desc});
   updateCartUI();
   openCart();
 }
-function openCart(){ document.getElementById('cartPanel').classList.remove('hidden'); }
-function closeCart(){ document.getElementById('cartPanel').classList.add('hidden'); }
+function openCart(){ document.getElementById('cartPanel').classList.add('open'); }
+function closeCart(){ document.getElementById('cartPanel').classList.remove('open'); }
 
 document.querySelectorAll('.add-btn').forEach(btn=>{
   btn.addEventListener('click', e=>{
@@ -217,23 +251,53 @@ document.querySelectorAll('.add-btn').forEach(btn=>{
     const name = card.querySelector('h3').innerText;
     const desc = card.querySelector('p').innerText;
     const price = card.querySelector('.font-bold').innerText;
-    addToCart(name, price, desc);
+    addToCart(name,price,desc);
   });
 });
-document.getElementById('cartToggle').addEventListener('click', ()=> document.getElementById('cartPanel').classList.toggle('hidden'));
+
+document.getElementById('cartToggle').addEventListener('click', ()=> {
+  document.getElementById('cartPanel').classList.toggle('open');
+});
 document.getElementById('closeCart').addEventListener('click', ()=> closeCart());
 document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-  if(cart.length===0){ alert('Cart is empty. Add something first.'); return; }
-  alert('Checkout simulation: Thank you for your purchase, ' + (APP_USER_NAME||'Customer') + '!');
-  cart=[]; updateCartUI();
+  if(cart.length===0){ alert('Cart is empty.'); return; }
+  alert('Thank you for your purchase, ' + (window.APP_USER_NAME||'Customer') + '!');
+  cart=[];
+  updateCartUI();
+  closeCart();
 });
 
-// Simple fake login simulation
-document.getElementById('loginBtn').addEventListener('click', ()=>{
-  let name = prompt('Enter your name to simulate login:');
-  if(name){ APP_USER_NAME=name; document.getElementById('greetingName').textContent=name; }
+/* CHAT LOGIC */
+document.getElementById('chatBubble').addEventListener('click', ()=> document.getElementById('chatBox').classList.toggle('hidden'));
+document.getElementById('closeChat').addEventListener('click', ()=> document.getElementById('chatBox').classList.add('hidden'));
+document.getElementById('quickShop').addEventListener('click', ()=> location.href='#products');
+
+/* LOGIN LOGIC */
+const loginModal = document.getElementById('loginModal');
+document.getElementById('loginBtn').addEventListener('click', ()=> loginModal.classList.remove('hidden'));
+document.getElementById('closeLoginModal').addEventListener('click', ()=> loginModal.classList.add('hidden'));
+
+/* SIMULATED LOGIN */
+function setAppUser(name){
+  window.APP_USER_NAME = name;
+  document.getElementById('greetingName').innerText = name;
+  const userArea = document.getElementById('userArea');
+  userArea.innerHTML = `<div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-sm">${name.slice(0,1)}</div><div class="hidden md:block text-sm">${name}</div><button id="logoutBtn" class="ml-2 text-sm text-slate-300">Logout</button></div>`;
+  document.getElementById('logoutBtn').addEventListener('click', ()=>{
+    window.APP_USER_NAME = null;
+    document.getElementById('greetingName').innerText = 'Guest';
+    document.getElementById('userArea').innerHTML = `<button id="loginBtn" class="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-pink-400 text-black px-4 py-2 rounded-full font-semibold neon-yellow">Login / Signup</button>`;
+    document.getElementById('loginBtn').addEventListener('click', ()=> loginModal.classList.remove('hidden'));
+  });
+}
+
+document.getElementById('fakeLoginBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('fakeName').value.trim();
+  if(!name){ alert('Type a name.'); return; }
+  setAppUser(name);
+  loginModal.classList.add('hidden');
 });
+document.getElementById('cancelFake').addEventListener('click', ()=> loginModal.classList.add('hidden'));
 </script>
-
 </body>
 </html>
