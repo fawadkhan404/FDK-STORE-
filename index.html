@@ -324,13 +324,21 @@ document.getElementById('cancelFake').addEventListener('click',()=> loginModal.c
   controls.enableZoom=false;
   const loader=new THREE.GLTFLoader();
   // Example: load default 3D model (replace with your own)
-  loader.load('https://threejs.org/examples/models/gltf/Flamingo.glb',gltf=>{
-    scene.add(gltf.scene);
-    gltf.scene.rotation.y=Math.PI;
-  });
+  loader.load('https://threejs.org/examples/models/gltf/Flamingo.glb', gltf=>{
+  const model = gltf.scene;
+  model.scale.set(0.5,0.5,0.5);
+  scene.add(model);
+
+  // Animate rotation
+  function animateModel(){
+    requestAnimationFrame(animateModel);
+    model.rotation.y += 0.005; // slow rotate
+  }
+  animateModel();
+});
   function animate(){ requestAnimationFrame(animate); renderer.render(scene,camera); controls.update(); }
   animate();
 })();
 </script>
 </body>
-    </html>
+</html>
