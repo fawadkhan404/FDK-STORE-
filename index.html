@@ -8,19 +8,29 @@
 <!-- Tailwind (CDN) -->
 <script src="https://cdn.tailwindcss.com"></script>
 
+<!-- Three.js + OrbitControls + GLTFLoader -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
 <style>
   :root{
     --bg:#061028;
     --glass: rgba(255,255,255,0.04);
     --muted:#bfcfe0;
   }
-  body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0ff; font-family: 'Poppins', sans-serif; min-height:100vh; }
+  body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0ff; font-family: Inter, Poppins, system-ui, sans-serif; min-height:100vh; }
   .glass { background: var(--glass); backdrop-filter: blur(8px); border-radius: 12px; }
   .neon-yellow { box-shadow: 0 6px 30px rgba(255,215,0,0.12), 0 0 12px rgba(255,215,0,0.06); }
   .neon-pink { box-shadow: 0 6px 30px rgba(255,102,178,0.08), 0 0 12px rgba(255,102,178,0.05); }
   .product-card { transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s; }
   .product-card:hover{ transform: translateY(-10px) scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
   .badge { font-weight:700; font-size:.75rem; padding:.25rem .6rem; border-radius:999px; }
+  .cursor-grab { cursor: grab; }
+  .cursor-grabbing { cursor: grabbing; }
   .cart-panel { right:-380px; transition: right .32s ease; }
   .cart-panel.open { right: 16px; }
 </style>
@@ -40,6 +50,7 @@
         Login / Signup
       </button>
     </div>
+
     <button id="cartToggle" title="Open Cart" class="relative inline-flex items-center gap-2 px-3 py-2 rounded-full glass">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7m12-7l2 7M9 21h.01M15 21h.01" /></svg>
       <span id="cartCount" class="text-sm text-slate-300">0</span>
@@ -51,9 +62,7 @@
 <section class="px-6 py-8 grid lg:grid-cols-2 gap-8 items-center">
   <div>
     <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">FDK Store — <span class="text-yellow-400">Online Shopping</span></h1>
-    <p class="mt-4 text-slate-300 max-w-xl">
-      Discover the latest products easily and at reasonable prices.
-    </p>
+    <p class="mt-4 text-slate-300 max-w-xl">Every product you need, easily available at the latest and best prices.</p>
     <div class="flex gap-3 mt-6">
       <a href="#products" class="px-5 py-3 rounded-full bg-yellow-400 text-black font-semibold neon-yellow">Explore Collection</a>
       <button id="learnBtn" class="px-4 py-3 rounded-full glass text-sm">Learn More</button>
@@ -63,7 +72,7 @@
     </div>
   </div>
 
-  <!-- Placeholder 3D card -->
+  <!-- 3D Canvas card -->
   <div class="w-full flex justify-center">
     <div id="viewerWrap" class="glass neon-pink p-3 rounded-2xl" style="width:360px; max-width:100%;">
       <canvas id="heroCanvas" class="w-full h-80 rounded-xl"></canvas>
@@ -77,7 +86,7 @@
         </div>
       </div>
       <div class="mt-3 flex gap-2">
-        <button id="buyNowHero" class="px-4 py-2 rounded-full bg-yellow-400 text-black font-semibold">Buy</button>
+        <button id="buyNowHero" class="flex-1 px-3 py-2 rounded-full bg-yellow-400 text-black font-semibold">Buy</button>
       </div>
     </div>
   </div>
@@ -86,7 +95,7 @@
 <!-- PRODUCTS GRID -->
 <section id="products" class="px-6 py-10">
   <h2 class="text-2xl font-bold mb-3 text-center">Top Trending Products</h2>
-  <p class="text-center text-slate-300 mb-6">High-quality products at reasonable prices.</p>
+  <p class="text-center text-slate-300 mb-6">Direct add-to-cart for latest products.</p>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <!-- card 1 -->
@@ -120,7 +129,6 @@
         <div class="flex gap-2">
           <button class="add-btn px-3 py-1 rounded-full bg-indigo-400 text-black font-semibold">Add</button>
         </div>
-      </div>
       </div>
       <!-- card 3 -->
     <div class="product-card glass p-4 rounded-2xl">
@@ -181,17 +189,16 @@
       <button id="closeLoginModal" class="text-slate-300">✕</button>
     </div>
     <p class="text-slate-300 mt-2">Sign in with Gmail to show your name across the store.</p>
-
     <div class="mt-4 space-y-3">
       <div id="gsiButtonWrapper"></div>
       <div id="fallbackLogin" class="space-y-2">
-        <input id="fakeName" class="w-full p-2 rounded-md bg-black/20" placeholder="Type a name to simulate login">
+        <input id="fakeName" class="w-full p-2 rounded-md bg-black/20" placeholder="Type a name to simulate login (e.g. Ali Khan)">
         <div class="flex gap-2">
           <button id="fakeLoginBtn" class="flex-1 rounded-full bg-pink-500 text-black py-2 font-semibold">Simulate Login</button>
           <button id="cancelFake" class="flex-1 rounded-full bg-transparent border border-white/10 py-2">Cancel</button>
         </div>
       </div>
-      <p class="text-xs text-slate-400 mt-3">For real Gmail sign-in, paste your Google OAuth Client ID in the script.</p>
+      <p class="text-xs text-slate-400 mt-3">Note: For actual Gmail login, add Google OAuth Client ID.</p>
     </div>
   </div>
 </div>
@@ -218,115 +225,112 @@
   </div>
 </footer>
 
-<!-- ---------- SCRIPT PART ---------- -->
+<!-- ---------- Script (all app logic) ---------- -->
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/* ---------- CART LOGIC ---------- */
+/* CART LOGIC */
 let cart = [];
-
-// Update cart panel content
 function updateCartUI(){
   const cartList = document.getElementById('cartList');
   const cartCount = document.getElementById('cartCount');
   const totalEl = document.getElementById('cartTotal');
-
-  if(cart.length === 0){
-    cartList.innerHTML = '<p class="text-slate-400">No items yet.</p>';
-  } else {
-    cartList.innerHTML = cart.map((it, i)=>{
-      return `
-        <div class="flex items-center justify-between py-2 border-b border-white/10">
-          <div>
-            <div class="font-semibold">${it.name}</div>
-            <div class="text-xs text-slate-400">${it.desc}</div>
-          </div>
-          <div class="text-sm font-bold">${it.price}</div>
-        </div>
-      `;
-    }).join('');
+  if(cart.length===0){
+    cartList.innerHTML='<p class="text-slate-400">No items yet.</p>';
+  }else{
+    cartList.innerHTML = cart.map(it=>`<div class="flex items-center justify-between py-2"><div><div class="font-semibold">${it.name}</div><div class="text-xs text-slate-400">${it.desc}</div></div><div class="text-sm font-bold">${it.price}</div></div>`).join('');
   }
-
-  // Update cart icon count
-  cartCount.textContent = cart.length;
-
-  // Calculate total price
-  let total = cart.reduce((s,it)=> s + parseFloat(it.price.replace('$','')), 0);
-  totalEl.textContent = '$' + total.toFixed(2);
+  cartCount.textContent=cart.length;
+  let total = cart.reduce((s,it)=>s+parseFloat(it.price.replace('$','')),0);
+  totalEl.textContent='$'+total.toFixed(2);
 }
-
-// Add item to cart (does NOT auto open panel)
-function addToCart(name, price, desc){
-  cart.push({name, price, desc});
+function addToCart(name,price,desc){
+  cart.push({name,price,desc});
   updateCartUI();
 }
 
-// Open / Close cart panel
-function toggleCart(){
+/* CART BUTTONS */
+document.getElementById('cartToggle').addEventListener('click',()=>{
   document.getElementById('cartPanel').classList.toggle('open');
-}
-function closeCart(){
+});
+document.getElementById('closeCart').addEventListener('click',()=> document.getElementById('cartPanel').classList.remove('open'));
+document.getElementById('checkoutBtn').addEventListener('click',()=>{
+  if(cart.length===0){ alert('Cart is empty.'); return; }
+  alert('Checkout simulation: Thank you for your purchase, '+(window.APP_USER_NAME||'Customer')+'!');
+  cart=[];
+  updateCartUI();
   document.getElementById('cartPanel').classList.remove('open');
-}
+});
 
-// Wire up add buttons
-$all('.add-btn').forEach(btn=>{
-  btn.addEventListener('click', (e)=>{
+/* ADD TO CART HANDLER */
+document.querySelectorAll('.add-btn').forEach(btn=>{
+  btn.addEventListener('click',e=>{
     const card = e.target.closest('.product-card');
     const name = card.querySelector('h3').innerText;
     const desc = card.querySelector('p').innerText;
     const price = card.querySelector('.font-bold').innerText;
-    addToCart(name, price, desc);
+    addToCart(name,price,desc);
   });
 });
 
-// Wire up cart icon and close button
-$('#cartToggle').addEventListener('click', toggleCart);
-$('#closeCart').addEventListener('click', closeCart);
+/* CHAT */
+document.getElementById('chatBubble').addEventListener('click',()=> document.getElementById('chatBox').classList.toggle('hidden'));
+document.getElementById('closeChat').addEventListener('click',()=> document.getElementById('chatBox').classList.add('hidden'));
+document.getElementById('quickShop').addEventListener('click',()=> location.href='#products');
 
-// Checkout button
-$('#checkoutBtn').addEventListener('click', ()=>{
-  if(cart.length === 0){ 
-    alert('Cart is empty. Add something first.'); 
-    return; 
-  }
-  alert('Checkout simulation: Thank you for your purchase, ' + (window.APP_USER_NAME || 'Customer') + '!');
-  cart = [];
-  updateCartUI();
-  closeCart();
-});
-
-/* CHAT LOGIC */
-document.getElementById('chatBubble').addEventListener('click', ()=> document.getElementById('chatBox').classList.toggle('hidden'));
-document.getElementById('closeChat').addEventListener('click', ()=> document.getElementById('chatBox').classList.add('hidden'));
-document.getElementById('quickShop').addEventListener('click', ()=> location.href='#products');
-
-/* LOGIN LOGIC */
+/* LOGIN / Gmail */
 const loginModal = document.getElementById('loginModal');
-document.getElementById('loginBtn').addEventListener('click', ()=> loginModal.classList.remove('hidden'));
-document.getElementById('closeLoginModal').addEventListener('click', ()=> loginModal.classList.add('hidden'));
-
-/* GOOGLE LOGIN */
-function setAppUser(name){
-  window.APP_USER_NAME = name;
-  document.getElementById('greetingName').innerText = name;
-  const userArea = document.getElementById('userArea');
-  userArea.innerHTML = `<div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-sm">${name.slice(0,1)}</div><div class="hidden md:block text-sm">${name}</div><button id="logoutBtn" class="ml-2 text-sm text-slate-300">Logout</button></div>`;
-  document.getElementById('logoutBtn').addEventListener('click', ()=>{
-    window.APP_USER_NAME = null;
-    document.getElementById('greetingName').innerText = 'Guest';
-    document.getElementById('userArea').innerHTML = `<button id="loginBtn" class="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-pink-400 text-black px-4 py-2 rounded-full font-semibold neon-yellow">Login / Signup</button>`;
-    document.getElementById('loginBtn').addEventListener('click', ()=> loginModal.classList.remove('hidden'));
+document.getElementById('loginBtn').addEventListener('click',()=> loginModal.classList.remove('hidden'));
+document.getElementById('closeLoginModal').addEventListener('click',()=> loginModal.classList.add('hidden'));
+const GOOGLE_CLIENT_ID='YOUR_GOOGLE_CLIENT_ID';
+function setAppUser(name,picture){
+  window.APP_USER_NAME=name;
+  document.getElementById('greetingName').innerText=name;
+  const userArea=document.getElementById('userArea');
+  userArea.innerHTML=`<div class="flex items-center gap-2">
+    ${picture?`<img src="${picture}" class="w-8 h-8 rounded-full">`:`<div class="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-sm">${name.slice(0,1)}</div>`}
+    <div class="hidden md:block text-sm">${name}</div>
+    <button id="logoutBtn" class="ml-2 text-sm text-slate-300">Logout</button>
+  </div>`;
+  document.getElementById('logoutBtn').addEventListener('click',()=>{
+    window.APP_USER_NAME=null;
+    document.getElementById('greetingName').innerText='Guest';
+    userArea.innerHTML=`<button id="loginBtn" class="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-pink-400 text-black px-4 py-2 rounded-full font-semibold neon-yellow">Login / Signup</button>`;
+    document.getElementById('loginBtn').addEventListener('click',()=> loginModal.classList.remove('hidden'));
   });
 }
 
-document.getElementById('fakeLoginBtn').addEventListener('click', ()=>{
-  const name = document.getElementById('fakeName').value.trim();
-  if(!name){ alert('Type a name.'); return; }
-  setAppUser(name);
+/* Fallback simulated login */
+document.getElementById('fakeLoginBtn').addEventListener('click',()=>{
+  const name=document.getElementById('fakeName').value.trim();
+  if(!name){ alert('Type a name'); return; }
+  setAppUser(name,null);
   loginModal.classList.add('hidden');
 });
-document.getElementById('cancelFake').addEventListener('click', ()=> loginModal.classList.add('hidden'));
+document.getElementById('cancelFake').addEventListener('click',()=> loginModal.classList.add('hidden'));
+
+/* 3D VIEWER ANIMATION (Three.js) */
+(function init3DViewer(){
+  const canvas=document.getElementById('heroCanvas');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(35,canvas.clientWidth/canvas.clientHeight,0.1,1000);
+  camera.position.set(0,1.2,3);
+  const light=new THREE.DirectionalLight(0xffffff,1);
+  light.position.set(5,10,7);
+  scene.add(light);
+  const controls=new THREE.OrbitControls(camera,canvas);
+  controls.enableDamping=true;
+  controls.enableZoom=false;
+  const loader=new THREE.GLTFLoader();
+  // Example: load default 3D model (replace with your own)
+  loader.load('https://threejs.org/examples/models/gltf/Flamingo.glb',gltf=>{
+    scene.add(gltf.scene);
+    gltf.scene.rotation.y=Math.PI;
+  });
+  function animate(){ requestAnimationFrame(animate); renderer.render(scene,camera); controls.update(); }
+  animate();
+})();
 </script>
 </body>
-</html>
+    </html>
