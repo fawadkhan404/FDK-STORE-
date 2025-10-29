@@ -3,39 +3,45 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>FDK Store — Interactive Demo</title>
+<title>FDK Store — Online Shopping</title>
 
-<!-- Tailwind (CDN) -->
+<!-- Tailwind CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Three.js + OrbitControls + GLTFLoader -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-
-<!-- Google Identity Services (for real Gmail sign-in) -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-
 <style>
-  :root{
-    --bg:#061028;
-    --glass: rgba(255,255,255,0.04);
-    --muted:#bfcfe0;
-  }
-  body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0ff; font-family: Inter, Poppins, system-ui, sans-serif; min-height:100vh; }
-  .glass { background: var(--glass); backdrop-filter: blur(8px); border-radius: 12px; }
-  .neon-yellow { box-shadow: 0 6px 30px rgba(255,215,0,0.12), 0 0 12px rgba(255,215,0,0.06); }
-  .neon-pink { box-shadow: 0 6px 30px rgba(255,102,178,0.08), 0 0 12px rgba(255,102,178,0.05); }
-  .product-card { transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s; }
-  .product-card:hover{ transform: translateY(-10px) scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-  /* small helpers */
-  .badge { font-weight:700; font-size:.75rem; padding:.25rem .6rem; border-radius:999px; }
-  /* responsive canvas sizing handled in JS */
-  .cursor-grab { cursor: grab; }
-  .cursor-grabbing { cursor: grabbing; }
-  /* cart */
-  .cart-panel { right:-380px; transition: right .32s ease; }
-  .cart-panel.open { right: 16px; }
+:root{
+  --bg:#061028;
+  --glass: rgba(255,255,255,0.04);
+  --muted:#bfcfe0;
+}
+body{ background: linear-gradient(180deg,#050615 0%, #07122a 100%); color:#e8f0ff; font-family: Inter, Poppins, system-ui, sans-serif; min-height:100vh; }
+.glass { background: var(--glass); backdrop-filter: blur(8px); border-radius: 12px; }
+.neon-yellow { box-shadow: 0 6px 30px rgba(255,215,0,0.12), 0 0 12px rgba(255,215,0,0.06); }
+.neon-pink { box-shadow: 0 6px 30px rgba(255,102,178,0.08), 0 0 12px rgba(255,102,178,0.05); }
+.product-card { transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s; }
+.product-card:hover{ transform: translateY(-10px) scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+.badge { font-weight:700; font-size:.75rem; padding:.25rem .6rem; border-radius:999px; }
+.cursor-grab { cursor: grab; }
+.cursor-grabbing { cursor: grabbing; }
+
+/* Cart panel vertically centered */
+.cart-panel {
+  position: fixed;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  width: 300px;
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 0 20px #FFD700;
+  z-index: 1000;
+  transition: all 0.32s ease;
+}
+.cart-panel.hidden { right:-380px; }
+#loginModal { background: rgba(0,0,0,0.6); display: flex; }
+#loginModal.hidden { display: none; }
 </style>
 </head>
 <body>
@@ -46,15 +52,12 @@
     <div class="text-2xl font-bold">FDK Store</div>
     <div class="text-sm text-slate-300 hidden md:block">— Trusted online store</div>
   </div>
-
   <div class="flex items-center gap-3">
     <div id="userArea" class="flex items-center gap-3">
-      <!-- Filled dynamically: if logged in shows avatar & name -->
       <button id="loginBtn" class="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-pink-400 text-black px-4 py-2 rounded-full font-semibold neon-yellow">
         Login / Signup
       </button>
     </div>
-
     <button id="cartToggle" title="Open Cart" class="relative inline-flex items-center gap-2 px-3 py-2 rounded-full glass">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7m12-7l2 7M9 21h.01M15 21h.01" /></svg>
       <span id="cartCount" class="text-sm text-slate-300">0</span>
@@ -65,36 +68,30 @@
 <!-- HERO -->
 <section class="px-6 py-8 grid lg:grid-cols-2 gap-8 items-center">
   <div>
-    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">FDK Store — <span class="text-yellow-400">Neon & 3D Experience</span></h1>
-    <p class="mt-4 text-slate-300 max-w-xl">Interactive 3D viewer, Amazon-like product cards, cart, login with Gmail (real-name support), smooth neon glass UI — sab single file mein.</p>
+    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">FDK Store — <span class="text-yellow-400">Online Shopping</span></h1>
+    <p class="mt-4 text-slate-300 max-w-xl">Find top-quality products easily at the latest styles and fair prices.</p>
     <div class="flex gap-3 mt-6">
       <a href="#products" class="px-5 py-3 rounded-full bg-yellow-400 text-black font-semibold neon-yellow">Explore Collection</a>
       <button id="learnBtn" class="px-4 py-3 rounded-full glass text-sm">Learn More</button>
     </div>
-
-    <!-- Personalized greetings shown when logged in -->
     <div class="mt-6">
-      <p class="text-sm text-slate-300">Hello, <span id="greetingName">Guest</span> 👋</p>
+      <p class="text-sm text-slate-300">Hello, <span id="greetingName">Guest</span></p>
     </div>
   </div>
 
-  <!-- 3D Canvas card -->
+  <!-- Hero Product Card -->
   <div class="w-full flex justify-center">
-    <div id="viewerWrap" class="glass neon-pink p-3 rounded-2xl" style="width:360px; max-width:100%;">
-      <!-- Canvas will be sized by JS -->
-      <canvas id="heroCanvas" class="w-full h-80 rounded-xl"></canvas>
+    <div class="glass neon-pink p-3 rounded-2xl" style="width:360px; max-width:100%;">
+      <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&q=80" alt="Watch" class="w-full h-80 object-cover rounded-xl">
       <div class="mt-3 flex items-center justify-between">
         <div>
-          <div id="viewerTitle" class="font-semibold text-lg">FDK — Stainless Watch</div>
+          <div class="font-semibold text-lg">FDK — Stainless Watch</div>
           <div class="text-sm text-slate-300">Stainless • Quartz • Water-resistant</div>
         </div>
-        <div class="flex items-center gap-2">
-          <div id="priceTag" class="font-bold text-lg">$89.99</div>
-        </div>
+        <div class="font-bold text-lg">$89.99</div>
       </div>
-      <div class="mt-3 flex gap-2">
-        <button id="view3DBtn" class="flex-1 px-3 py-2 rounded-full bg-pink-500 text-black font-semibold">View 3D</button>
-        <button id="buyNowHero" class="px-4 py-2 rounded-full bg-yellow-400 text-black font-semibold">Buy</button>
+      <div class="mt-3">
+        <button class="px-4 py-2 rounded-full bg-yellow-400 text-black font-semibold w-full">Buy</button>
       </div>
     </div>
   </div>
@@ -104,9 +101,8 @@
 <section id="products" class="px-6 py-10">
   <h2 class="text-2xl font-bold mb-3 text-center">Top Trending Products</h2>
   <p class="text-center text-slate-300 mb-6">Glass cards, neon accents, badges, ratings — direct add-to-cart.</p>
-
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    <!-- card 1 -->
+    <!-- Product 1 -->
     <div class="product-card glass p-4 rounded-2xl">
       <div class="relative">
         <img class="w-full h-48 object-cover rounded-xl" src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=1200&q=80" alt="Headphones">
@@ -117,13 +113,10 @@
       <p class="text-sm text-slate-300">Noise cancellation • 30h battery</p>
       <div class="mt-3 flex items-center justify-between">
         <div class="font-bold">$59.99</div>
-        <div class="flex gap-2">
-          <button class="add-btn px-3 py-1 rounded-full bg-pink-400 text-black font-semibold">Add</button>
-        </div>
+        <button class="add-btn px-3 py-1 rounded-full bg-pink-400 text-black font-semibold">Add</button>
       </div>
     </div>
-
-    <!-- card 2 -->
+    <!-- Product 2 -->
     <div class="product-card glass p-4 rounded-2xl">
       <div class="relative">
         <img class="w-full h-48 object-cover rounded-xl" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&q=80" alt="Sneakers">
@@ -134,13 +127,10 @@
       <p class="text-sm text-slate-300">Responsive sole • Modern silhouette</p>
       <div class="mt-3 flex items-center justify-between">
         <div class="font-bold">$120.00</div>
-        <div class="flex gap-2">
-          <button class="add-btn px-3 py-1 rounded-full bg-indigo-400 text-black font-semibold">Add</button>
-        </div>
+        <button class="add-btn px-3 py-1 rounded-full bg-indigo-400 text-black font-semibold">Add</button>
       </div>
     </div>
-
-    <!-- card 3 -->
+    <!-- Product 3 -->
     <div class="product-card glass p-4 rounded-2xl">
       <div class="relative">
         <img class="w-full h-48 object-cover rounded-xl" src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=1200&q=80" alt="Sunglasses">
@@ -151,13 +141,10 @@
       <p class="text-sm text-slate-300">Polarized • UV400</p>
       <div class="mt-3 flex items-center justify-between">
         <div class="font-bold">$45.00</div>
-        <div class="flex gap-2">
-          <button class="add-btn px-3 py-1 rounded-full bg-yellow-400 text-black font-semibold">Add</button>
-        </div>
+        <button class="add-btn px-3 py-1 rounded-full bg-yellow-400 text-black font-semibold">Add</button>
       </div>
     </div>
-
-    <!-- card 4 -->
+    <!-- Product 4 -->
     <div class="product-card glass p-4 rounded-2xl">
       <div class="relative">
         <img class="w-full h-48 object-cover rounded-xl" src="https://images.unsplash.com/photo-1511450557836-5e9b0d71bfc4?w=1200&q=80" alt="Bag">
@@ -168,16 +155,14 @@
       <p class="text-sm text-slate-300">Stylish • LED accent</p>
       <div class="mt-3 flex items-center justify-between">
         <div class="font-bold">$79.00</div>
-        <div class="flex gap-2">
-          <button class="add-btn px-3 py-1 rounded-full bg-pink-400 text-black font-semibold">Add</button>
-        </div>
+        <button class="add-btn px-3 py-1 rounded-full bg-pink-400 text-black font-semibold">Add</button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CART PANEL (Slide-in) -->
-<aside id="cartPanel" class="cart-panel fixed top-8 right-4 w-80 glass p-4 rounded-2xl shadow-xl z-50">
+<!-- CART PANEL -->
+<aside id="cartPanel" class="cart-panel hidden">
   <div class="flex items-center justify-between">
     <h3 class="font-bold">Your Cart</h3>
     <button id="closeCart" class="text-sm text-slate-300">Close</button>
@@ -191,47 +176,6 @@
   </div>
 </aside>
 
-<!-- LOGIN POPUP / Gmail -->
-<div id="loginModal" class="fixed inset-0 hidden items-center justify-center z-60">
-  <div class="glass p-6 rounded-2xl w-full max-w-md">
-    <div class="flex items-center justify-between">
-      <h3 class="text-xl font-bold">Login</h3>
-      <button id="closeLoginModal" class="text-slate-300">✕</button>
-    </div>
-    <p class="text-slate-300 mt-2">Sign in with Gmail to show your name and profile across the store.</p>
-
-    <div class="mt-4 space-y-3">
-      <!-- REAL Google button will be injected if client id set -->
-      <div id="gsiButtonWrapper"></div>
-
-      <!-- fallback simulated login -->
-      <div id="fallbackLogin" class="space-y-2">
-        <input id="fakeName" class="w-full p-2 rounded-md bg-black/20" placeholder="Type a name to simulate login (e.g. Ali Khan)">
-        <div class="flex gap-2">
-          <button id="fakeLoginBtn" class="flex-1 rounded-full bg-pink-500 text-black py-2 font-semibold">Simulate Login</button>
-          <button id="cancelFake" class="flex-1 rounded-full bg-transparent border border-white/10 py-2">Cancel</button>
-        </div>
-      </div>
-
-      <p class="text-xs text-slate-400 mt-3">Note: To show actual Gmail name, create a Google OAuth Client ID and paste it in the code (see comments).</p>
-    </div>
-  </div>
-</div>
-
-<!-- CHAT -->
-<div id="chatBubble" class="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-r from-yellow-400 to-pink-400 text-black shadow-xl z-40">💬</div>
-<div id="chatBox" class="hidden fixed bottom-24 right-6 glass p-4 w-80 rounded-2xl z-40">
-  <div class="flex items-center justify-between">
-    <h4 class="font-semibold">Support</h4>
-    <button id="closeChat" class="text-slate-300">✕</button>
-  </div>
-  <p class="text-slate-300 mt-2 text-sm">Hi! I can suggest products or answer order questions.</p>
-  <div class="mt-3 flex gap-2">
-    <button id="quickShop" class="flex-1 rounded-full bg-yellow-400 text-black py-2">Shop</button>
-    <button id="askAgent" class="flex-1 rounded-full glass py-2">Message</button>
-  </div>
-</div>
-
 <!-- FOOTER -->
 <footer class="px-6 py-8 text-slate-300">
   <div class="max-w-6xl mx-auto text-center">
@@ -240,27 +184,12 @@
   </div>
 </footer>
 
-<!-- ---------- Script (all app logic) ---------- -->
+<!-- SCRIPT -->
 <script>
-/* ============================
-   CONFIG: Replace with your Google Client ID to enable REAL Gmail sign-in.
-   How to get Client ID:
-   1) Go to https://console.cloud.google.com/
-   2) Create a project → APIs & Services → OAuth consent screen (configure)
-   3) Create Credentials → OAuth 2.0 Client IDs → choose "Web application" and add origin
-   4) Copy the resulting Client ID and paste below.
-   ============================ */
-const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // <-- replace this with real one (or leave as string to use simulated login)
-
-/* ---------- Utilities ---------- */
-function $(sel){ return document.querySelector(sel); }
-function $all(sel){ return Array.from(document.querySelectorAll(sel)); }
-
-/* ---------- YEAR ---------- */
 document.getElementById('year').textContent = new Date().getFullYear();
-
-/* ---------- CART LOGIC ---------- */
 let cart = [];
+let APP_USER_NAME = null;
+
 function updateCartUI(){
   const cartList = document.getElementById('cartList');
   const cartCount = document.getElementById('cartCount');
@@ -268,10 +197,9 @@ function updateCartUI(){
   if(cart.length === 0){
     cartList.innerHTML = '<p class="text-slate-400">No items yet.</p>';
   } else {
-    cartList.innerHTML = cart.map((it, i)=>`<div class="flex items-center justify-between py-2"><div><div class="font-semibold">${it.name}</div><div class="text-xs text-slate-400">${it.desc}</div></div><div class="text-sm font-bold">${it.price}</div></div>`).join('');
+    cartList.innerHTML = cart.map(it=>\`<div class="flex items-center justify-between py-2"><div><div class="font-semibold">\${it.name}</div><div class="text-xs text-slate-400">\${it.desc}</div></div><div class="text-sm font-bold">\${it.price}</div></div>\`).join('');
   }
   cartCount.textContent = cart.length;
-  // simple total (note: price strings include $)
   let total = cart.reduce((s,it)=> s + parseFloat(it.price.replace('$','')), 0);
   totalEl.textContent = '$' + total.toFixed(2);
 }
@@ -280,12 +208,11 @@ function addToCart(name, price, desc){
   updateCartUI();
   openCart();
 }
-function openCart(){ document.getElementById('cartPanel').classList.add('open'); }
-function closeCart(){ document.getElementById('cartPanel').classList.remove('open'); }
+function openCart(){ document.getElementById('cartPanel').classList.remove('hidden'); }
+function closeCart(){ document.getElementById('cartPanel').classList.add('hidden'); }
 
-/* ---------- Wire up add buttons ---------- */
-$all('.add-btn').forEach(btn=>{
-  btn.addEventListener('click', (e)=>{
+document.querySelectorAll('.add-btn').forEach(btn=>{
+  btn.addEventListener('click', e=>{
     const card = e.target.closest('.product-card');
     const name = card.querySelector('h3').innerText;
     const desc = card.querySelector('p').innerText;
@@ -293,248 +220,20 @@ $all('.add-btn').forEach(btn=>{
     addToCart(name, price, desc);
   });
 });
-$('#cartToggle').addEventListener('click', ()=> {
-  document.getElementById('cartPanel').classList.toggle('open');
-});
-$('#closeCart').addEventListener('click', ()=> closeCart());
-$('#checkoutBtn').addEventListener('click', ()=>{
-  if(cart.length === 0){ alert('Cart is empty. Add something first.'); return; }
-  alert('Checkout simulation: Thank you for your purchase, ' + (window.APP_USER_NAME || 'Customer') + '!');
-  cart = [];
-  updateCartUI();
-  closeCart();
+document.getElementById('cartToggle').addEventListener('click', ()=> document.getElementById('cartPanel').classList.toggle('hidden'));
+document.getElementById('closeCart').addEventListener('click', ()=> closeCart());
+document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+  if(cart.length===0){ alert('Cart is empty. Add something first.'); return; }
+  alert('Checkout simulation: Thank you for your purchase, ' + (APP_USER_NAME||'Customer') + '!');
+  cart=[]; updateCartUI();
 });
 
-/* ---------- Chat ---------- */
-$('#chatBubble').addEventListener('click', ()=> $('#chatBox').classList.toggle('hidden'));
-$('#closeChat').addEventListener('click', ()=> $('#chatBox').classList.add('hidden'));
-$('#quickShop').addEventListener('click', ()=> location.href='#products');
-
-/* ---------- Login Modal ---------- */
-const loginModal = $('#loginModal');
-$('#loginBtn').addEventListener('click', ()=> loginModal.classList.remove('hidden'));
-$('#closeLoginModal').addEventListener('click', ()=> loginModal.classList.add('hidden'));
-
-/* ---------- Gmail Sign-in handling ---------- */
-/*
- If GOOGLE_CLIENT_ID is replaced with a real Client ID, this will render a
- Google sign-in button. On success, the callback gets a credential JWT,
- decode it and read name/email/picture. We then show user's name across UI.
-
- If GOOGLE_CLIENT_ID is left as placeholder, we show a fallback "simulate login"
- that simply asks user to type a name (for testing).
-*/
-function decodeJwtResponse(token) {
-  // JWT = header.payload.signature ; payload is base64url
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  try {
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-  } catch (e) {
-    console.error('JWT decode failed', e);
-    return null;
-  }
-}
-function onGoogleCredential(response){
-  const payload = decodeJwtResponse(response.credential);
-  if(payload){
-    const name = payload.name || payload.email || 'User';
-    const picture = payload.picture || null;
-    setAppUser(name, picture);
-    loginModal.classList.add('hidden');
-  } else {
-    alert('Google sign-in failed to decode token.');
-  }
-}
-
-function setAppUser(name, picture){
-  window.APP_USER_NAME = name;
-  // show in greeting
-  document.getElementById('greetingName').innerText = name;
-  // show in user area: avatar + name
-  const userArea = document.getElementById('userArea');
-  userArea.innerHTML = `
-    <div class="flex items-center gap-2">
-      ${picture ? `<img src="${picture}" class="w-8 h-8 rounded-full" alt="avatar">` : `<div class="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-sm">${name.slice(0,1)}</div>`}
-      <div class="hidden md:block text-sm">${name}</div>
-      <button id="logoutBtn" class="ml-2 text-sm text-slate-300">Logout</button>
-    </div>
-  `;
-  // wire logout
-  document.getElementById('logoutBtn').addEventListener('click', ()=> {
-    window.APP_USER_NAME = null;
-    document.getElementById('greetingName').innerText = 'Guest';
-    // restore login btn
-    document.getElementById('userArea').innerHTML = `<button id="loginBtn" class="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-pink-400 text-black px-4 py-2 rounded-full font-semibold neon-yellow">Login / Signup</button>`;
-    // reattach event to new loginBtn
-    document.getElementById('loginBtn').addEventListener('click', ()=> loginModal.classList.remove('hidden'));
-  });
-}
-
-/* ---------- Setup Google Sign-in or Fallback ---------- */
-(function setupLogin(){
-  if(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID'){
-    // Initialize Google Identity Services
-    window.onGoogleLibraryLoad = function(){
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: onGoogleCredential
-      });
-      // render button
-      google.accounts.id.renderButton(
-        document.getElementById('gsiButtonWrapper'),
-        { theme: 'outline', size: 'large', text: 'signin_with' }
-      );
-      // optional: prompt automatically
-      // google.accounts.id.prompt();
-      // hide fallback input
-      document.getElementById('fallbackLogin').style.display = 'none';
-    };
-    // if gsi script already loaded, call init
-    if(window.google && google.accounts && google.accounts.id){
-      onGoogleLibraryLoad();
-    } else {
-      // wait for library
-      window.addEventListener('load', ()=> {
-        if(window.google && google.accounts && google.accounts.id) onGoogleLibraryLoad();
-      });
-    }
-  } else {
-    // show fallback simulated login (visible by default)
-    document.getElementById('gsiButtonWrapper').innerHTML = '<div class="text-slate-400 text-sm">(Google Client ID not set — using simulated login)</div>';
-    document.getElementById('fallbackLogin').style.display = 'block';
-  }
-
-  // attach fake login handlers (simulate login)
-  document.getElementById('fakeLoginBtn').addEventListener('click', ()=>{
-    const name = document.getElementById('fakeName').value.trim();
-    if(!name){ alert('Type a name to simulate login.'); return; }
-    setAppUser(name, null);
-    loginModal.classList.add('hidden');
-  });
-  document.getElementById('cancelFake').addEventListener('click', ()=> loginModal.classList.add('hidden'));
-
-  // initial login button attach
-  const initialLoginBtn = document.getElementById('loginBtn');
-  initialLoginBtn.addEventListener('click', ()=> loginModal.classList.remove('hidden'));
-})();
-
-/* ---------- 3D Viewer (Three.js) ---------- */
-(function init3DViewer(){
-  const canvas = document.getElementById('heroCanvas');
-  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  // responsive size
-  function resizeRenderer(){
-    const width = Math.min(360, canvas.parentElement.clientWidth);
-    const height = Math.round(width); // square-ish
-    renderer.setSize(width, height, false);
-    camera.aspect = width/height;
-    camera.updateProjectionMatrix();
-  }
-
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x07122a);
-
-  const camera = new THREE.PerspectiveCamera(45,1,0.1,1000);
-  camera.position.set(0,1.4,3.1);
-
-  // lights
-  const ambient = new THREE.HemisphereLight(0xffffee, 0x080820, 0.6);
-  scene.add(ambient);
-  const key = new THREE.DirectionalLight(0xffffff, 1.0);
-  key.position.set(5,10,7);
-  scene.add(key);
-
-  // controls
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enablePan = false;
-  controls.enableZoom = true;
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 1.0;
-  controls.enableDamping = true;
-
-  // fallback geometry (cube) if model fails
-  let modelRoot = new THREE.Group();
-  scene.add(modelRoot);
-
-  // function to load GLTF model; example URL below — you can replace with your own hosted model
-  const loader = new THREE.GLTFLoader();
-  const MODEL_URL = 'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/MetalRoughSpheres/glTF/MetalRoughSpheres.gltf';
-  // NOTE: above is a sample; replace with watch model URL if you have one
-
-  loader.load(
-    MODEL_URL,
-    function(gltf){
-      // clear fallback
-      modelRoot.clear();
-      const model = gltf.scene || gltf.scenes[0];
-      model.traverse(node => { if(node.isMesh) { node.castShadow = true; node.receiveShadow = true; } });
-      model.scale.set(1.2,1.2,1.2);
-      model.position.set(0,0,0);
-      modelRoot.add(model);
-    },
-    undefined,
-    function(err){
-      // fallback cube
-      console.warn('Model load failed, using fallback cube.', err);
-      const geo = new THREE.BoxGeometry(1.2,1.2,1.2);
-      const mat = new THREE.MeshStandardMaterial({color:0xff66b2, emissive:0x330033, metalness:0.6, roughness:0.3});
-      const cube = new THREE.Mesh(geo, mat);
-      modelRoot.clear();
-      modelRoot.add(cube);
-    }
-  );
-
-  // subtle ground
-  const groundGeo = new THREE.PlaneGeometry(10,10);
-  const groundMat = new THREE.ShadowMaterial({opacity:0.05});
-  const ground = new THREE.Mesh(groundGeo, groundMat);
-  ground.rotation.x = -Math.PI/2;
-  ground.position.y = -1.4;
-  scene.add(ground);
-
-  // animate
-  resizeRenderer();
-  window.addEventListener('resize', () => { resizeRenderer(); });
-
-  function animate(){
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  // "View 3D" button focuses and toggles autoRotate
-  document.getElementById('view3DBtn').addEventListener('click', ()=>{
-    controls.autoRotate = !controls.autoRotate;
-    controls.update();
-  });
-
-  // Buy from hero
-  document.getElementById('buyNowHero').addEventListener('click', ()=>{
-    addToCart(document.getElementById('viewerTitle').innerText, document.getElementById('priceTag').innerText, 'From hero viewer');
-  });
-
-})();
-
-/* ---------- small enhancements ---------- */
-document.getElementById('learnBtn').addEventListener('click', ()=> alert('FDK Store demo — 3D viewer + cart + Gmail-login (real) support.'));
-
-updateCartUI();
-
-/* ---------- Explain what name visibility implies ----------
- If user logs in with Google (real flow), the app receives a Google ID token
- that contains the user's name and picture (only after they consent). This
- code displays that name/picture in the navbar, greeting, and can personalize
- cart messages. This is safe only because user explicitly signs in.
-
- If you keep GOOGLE_CLIENT_ID empty, users can still "simulate" a login for testing.
- -------------------------------------------------------------- */
+// Simple fake login simulation
+document.getElementById('loginBtn').addEventListener('click', ()=>{
+  let name = prompt('Enter your name to simulate login:');
+  if(name){ APP_USER_NAME=name; document.getElementById('greetingName').textContent=name; }
+});
 </script>
+
 </body>
 </html>
