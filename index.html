@@ -27,12 +27,25 @@
   .neon-yellow { box-shadow: 0 6px 30px rgba(255,215,0,0.12), 0 0 12px rgba(255,215,0,0.06); }
   .neon-pink { box-shadow: 0 6px 30px rgba(255,102,178,0.08), 0 0 12px rgba(255,102,178,0.05); }
   .product-card { transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s; }
-  .product-card:hover{ transform: translateY(-10px) scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+  .product-card:hover {
+    transform: rotateY(5deg) rotateX(2deg) translateZ(10px) scale(1.03);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
   .badge { font-weight:700; font-size:.75rem; padding:.25rem .6rem; border-radius:999px; }
   .cursor-grab { cursor: grab; }
   .cursor-grabbing { cursor: grabbing; }
   .cart-panel { right:-380px; transition: right .32s ease; }
   .cart-panel.open { right: 16px; }
+  /* Buttons 3D hover effect */
+button, a {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover, a:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+                                 }
 </style>
 </head>
 <body>
@@ -91,7 +104,26 @@
     </div>
   </div>
 </section>
+<script>
+  // ===== HERO 3D HOVER EFFECT =====
+  const heroWrap = document.getElementById('viewerWrap');
 
+  heroWrap.addEventListener('mousemove', e => {
+    const rect = heroWrap.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width/2;
+    const cy = rect.height/2;
+    const dx = (x - cx)/cx;
+    const dy = (y - cy)/cy;
+    heroWrap.style.transform = `rotateY(${dx*5}deg) rotateX(${-dy*5}deg) translateZ(5px)`;
+  });
+
+  heroWrap.addEventListener('mouseleave', () => {
+    heroWrap.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0)';
+  });
+</script>
+  
 <!-- PRODUCTS GRID -->
 <section id="products" class="px-6 py-10">
   <h2 class="text-2xl font-bold mb-3 text-center">Top Trending Products</h2>
@@ -339,6 +371,21 @@ document.getElementById('cancelFake').addEventListener('click',()=> loginModal.c
   function animate(){ requestAnimationFrame(animate); renderer.render(scene,camera); controls.update(); }
   animate();
 })();
+  document.querySelectorAll('.product-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width/2;
+    const cy = rect.height/2;
+    const dx = (x - cx)/cx;
+    const dy = (y - cy)/cy;
+    card.style.transform = `rotateY(${dx*5}deg) rotateX(${-dy*5}deg) translateZ(10px) scale(1.03)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0) scale(1)';
+  });
+});
 </script>
 </body>
 </html>
