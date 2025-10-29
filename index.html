@@ -59,7 +59,7 @@
       <button id="learnBtn" class="px-4 py-3 rounded-full glass text-sm">Learn More</button>
     </div>
     <div class="mt-6">
-      <p class="text-sm text-slate-300">Hello, <span id="greetingName">Guest</span> 👋</p>
+      <p class="text-sm text-slate-300">Hello, <span id="greetingName">Guest</span> </p>
     </div>
   </div>
 
@@ -222,47 +222,76 @@
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/* CART LOGIC */
+/* ---------- CART LOGIC ---------- */
 let cart = [];
+
+// Update cart panel content
 function updateCartUI(){
   const cartList = document.getElementById('cartList');
   const cartCount = document.getElementById('cartCount');
   const totalEl = document.getElementById('cartTotal');
+
   if(cart.length === 0){
     cartList.innerHTML = '<p class="text-slate-400">No items yet.</p>';
   } else {
-    cartList.innerHTML = cart.map(it=>`<div class="flex items-center justify-between py-2"><div><div class="font-semibold">${it.name}</div><div class="text-xs text-slate-400">${it.desc}</div></div><div class="text-sm font-bold">${it.price}</div></div>`).join('');
+    cartList.innerHTML = cart.map((it, i)=>{
+      return `
+        <div class="flex items-center justify-between py-2 border-b border-white/10">
+          <div>
+            <div class="font-semibold">${it.name}</div>
+            <div class="text-xs text-slate-400">${it.desc}</div>
+          </div>
+          <div class="text-sm font-bold">${it.price}</div>
+        </div>
+      `;
+    }).join('');
   }
-  cartCount.textContent = cart.length;
-  let total = cart.reduce((s,it)=> s + parseFloat(it.price.replace('$','')),0);
-  totalEl.textContent = '$'+total.toFixed(2);
-}
-function addToCart(name,price,desc){
-  cart.push({name,price,desc});
-  updateCartUI();
-  openCart();
-}
-function openCart(){ document.getElementById('cartPanel').classList.add('open'); }
-function closeCart(){ document.getElementById('cartPanel').classList.remove('open'); }
 
-document.querySelectorAll('.add-btn').forEach(btn=>{
-  btn.addEventListener('click', e=>{
+  // Update cart icon count
+  cartCount.textContent = cart.length;
+
+  // Calculate total price
+  let total = cart.reduce((s,it)=> s + parseFloat(it.price.replace('$','')), 0);
+  totalEl.textContent = '$' + total.toFixed(2);
+}
+
+// Add item to cart (does NOT auto open panel)
+function addToCart(name, price, desc){
+  cart.push({name, price, desc});
+  updateCartUI();
+}
+
+// Open / Close cart panel
+function toggleCart(){
+  document.getElementById('cartPanel').classList.toggle('open');
+}
+function closeCart(){
+  document.getElementById('cartPanel').classList.remove('open');
+}
+
+// Wire up add buttons
+$all('.add-btn').forEach(btn=>{
+  btn.addEventListener('click', (e)=>{
     const card = e.target.closest('.product-card');
     const name = card.querySelector('h3').innerText;
     const desc = card.querySelector('p').innerText;
     const price = card.querySelector('.font-bold').innerText;
-    addToCart(name,price,desc);
+    addToCart(name, price, desc);
   });
 });
 
-document.getElementById('cartToggle').addEventListener('click', ()=> {
-  document.getElementById('cartPanel').classList.toggle('open');
-});
-document.getElementById('closeCart').addEventListener('click', ()=> closeCart());
-document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-  if(cart.length===0){ alert('Cart is empty.'); return; }
-  alert('Thank you for your purchase, ' + (window.APP_USER_NAME||'Customer') + '!');
-  cart=[];
+// Wire up cart icon and close button
+$('#cartToggle').addEventListener('click', toggleCart);
+$('#closeCart').addEventListener('click', closeCart);
+
+// Checkout button
+$('#checkoutBtn').addEventListener('click', ()=>{
+  if(cart.length === 0){ 
+    alert('Cart is empty. Add something first.'); 
+    return; 
+  }
+  alert('Checkout simulation: Thank you for your purchase, ' + (window.APP_USER_NAME || 'Customer') + '!');
+  cart = [];
   updateCartUI();
   closeCart();
 });
@@ -277,7 +306,7 @@ const loginModal = document.getElementById('loginModal');
 document.getElementById('loginBtn').addEventListener('click', ()=> loginModal.classList.remove('hidden'));
 document.getElementById('closeLoginModal').addEventListener('click', ()=> loginModal.classList.add('hidden'));
 
-/* SIMULATED LOGIN */
+/* GOOGLE LOGIN */
 function setAppUser(name){
   window.APP_USER_NAME = name;
   document.getElementById('greetingName').innerText = name;
