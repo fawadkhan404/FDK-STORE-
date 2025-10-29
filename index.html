@@ -32,6 +32,29 @@
     box-shadow: 0 15px 50px rgba(0,0,0,0.6);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
+  const productCards = document.querySelectorAll('.product-card');
+
+productCards.forEach(card => {
+  card.addEventListener('touchmove', e => {
+    if(e.touches.length === 1){
+      const touch = e.touches[0];
+      const rect = card.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      const cx = rect.width/2;
+      const cy = rect.height/2;
+      const dx = (x - cx)/cx;
+      const dy = (y - cy)/cy;
+      card.style.transform = `rotateY(${dx*5}deg) rotateX(${-dy*5}deg) translateZ(5px) scale(1.03)`;
+      card.style.boxShadow = '0 15px 50px rgba(0,0,0,0.6)';
+    }
+  });
+
+  card.addEventListener('touchend', () => {
+    card.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0) scale(1)';
+    card.style.boxShadow = '0 10px 40px rgba(0,0,0,0.6)';
+  });
+});
   .badge { font-weight:700; font-size:.75rem; padding:.25rem .6rem; border-radius:999px; }
   .cursor-grab { cursor: grab; }
   .cursor-grabbing { cursor: grabbing; }
@@ -122,6 +145,24 @@ button:hover, a:hover {
   heroWrap.addEventListener('mouseleave', () => {
     heroWrap.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0)';
   });
+  // Touch support for mobile
+heroWrap.addEventListener('touchmove', e => {
+  if(e.touches.length === 1){
+    const touch = e.touches[0];
+    const rect = heroWrap.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const cx = rect.width/2;
+    const cy = rect.height/2;
+    const dx = (x - cx)/cx;
+    const dy = (y - cy)/cy;
+    heroWrap.style.transform = `rotateY(${dx*5}deg) rotateX(${-dy*5}deg) translateZ(5px)`;
+  }
+});
+
+heroWrap.addEventListener('touchend', () => {
+  heroWrap.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0)';
+});
 </script>
   
 <!-- PRODUCTS GRID -->
